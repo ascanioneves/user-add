@@ -3,6 +3,7 @@ import Card from "../UI/Card";
 import styles from "./AddUser.module.css";
 import Button from "../UI/Button";
 import ErrorModal from "../UI/ErrorModal";
+import Wrapper from "../Helpers/Wrapper";
 
 const AddUser = (props) => {
   const [enteredUsername, setEnteredUsername] = useState("");
@@ -61,7 +62,7 @@ const AddUser = (props) => {
     setIsValid(true);
   };
   return (
-    <div>
+    <Wrapper>
       {!isValid && (
         <ErrorModal
           title={modalAtributes.title}
@@ -90,7 +91,7 @@ const AddUser = (props) => {
           </Button>
         </form>
       </Card>
-    </div>
+    </Wrapper>
   );
 };
 
