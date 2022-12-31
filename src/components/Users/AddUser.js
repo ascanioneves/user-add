@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Card from "../UI/Card";
 import styles from "./AddUser.module.css";
 import Button from "../UI/Button";
@@ -6,8 +6,8 @@ import ErrorModal from "../UI/ErrorModal";
 import Wrapper from "../Helpers/Wrapper";
 
 const AddUser = (props) => {
-  const [enteredUsername, setEnteredUsername] = useState("");
-  const [enteredUserAge, setEnteredUserAge] = useState("");
+  const nameInputRef = useRef();
+  const ageInputRef = useRef();
   const [isValid, setIsValid] = useState(true);
   const [modalAtributes, setModalAtributes] = useState({
     title: "",
@@ -18,24 +18,18 @@ const AddUser = (props) => {
     setIsValid(true);
   };
 
-  const onChangeUsernameHandler = (event) => {
-    setEnteredUsername(event.target.value);
-  };
-
-  const onChangeUserAgeHandler = (event) => {
-    setEnteredUserAge(event.target.value);
-  };
-
   const addUserHandler = (event) => {
     event.preventDefault();
-    if (enteredUsername.trim().length === 0) {
+    const enteredName = nameInputRef.current.value;
+    const enteredAge = ageInputRef.current.value;
+    if (enteredName.trim().length === 0) {
       setIsValid(false);
       setModalAtributes({
         title: "Empty name detected!",
         message: "Please, fill the name field correctly",
       });
       return;
-    } else if (enteredUserAge.trim().length === 0) {
+    } else if (enteredAge.trim().length === 0) {
       setIsValid(false);
       setModalAtributes({
         title: "Empty age detected!",
@@ -43,7 +37,7 @@ const AddUser = (props) => {
       });
       return;
     }
-    if (+enteredUserAge < 1) {
+    if (+enteredAge < 1) {
       setIsValid(false);
       setModalAtributes({
         title: "Age Problem!",
@@ -53,12 +47,12 @@ const AddUser = (props) => {
     }
 
     props.onAddUser({
-      name: enteredUsername,
-      age: enteredUserAge,
+      name: enteredName,
+      age: enteredAge,
       id: Math.random().toString(),
     });
-    setEnteredUsername("");
-    setEnteredUserAge("");
+    nameInputRef.current.value = "";
+    ageInputRef.current.value = "";
     setIsValid(true);
   };
   return (
@@ -73,19 +67,9 @@ const AddUser = (props) => {
       <Card className={styles.input}>
         <form onSubmit={addUserHandler}>
           <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            type="text"
-            value={enteredUsername || ""}
-            onChange={onChangeUsernameHandler}
-          ></input>
+          <input id="username" type="text" ref={nameInputRef}></input>
           <label htmlFor="age">Age (Years)</label>
-          <input
-            id="age"
-            type="number"
-            value={enteredUserAge || ""}
-            onChange={onChangeUserAgeHandler}
-          ></input>
+          <input id="age" type="number" ref={ageInputRef}></input>
           <Button onClick={addUserHandler} type="submit">
             Add User
           </Button>
